@@ -1,0 +1,5 @@
+Deep learning is a subfield of machine learning that uses neural networks with many layers. These networks are called deep because of their depth — the number of layers between input and output. Convolutional neural networks are used for image recognition tasks. Recurrent neural networks handle sequential data like text and time series.
+
+The transformer architecture revolutionized natural language processing. It uses an attention mechanism that allows the model to focus on relevant parts of the input. BERT and GPT are famous transformer models. BERT is trained to understand context while GPT is trained to generate text.
+
+Backpropagation is the algorithm used to train neural networks. It calculates the gradient of the loss function with respect to each weight and adjusts weights to minimize the loss. Adam and SGD are popular optimization algorithms used with backpropagation.

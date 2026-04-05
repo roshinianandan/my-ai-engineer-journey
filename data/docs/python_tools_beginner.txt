@@ -1,0 +1,5 @@
+Python is the most popular programming language for machine learning and data science. It has a simple syntax that makes it easy to learn and read. The main libraries used are NumPy for numerical computation, Pandas for data manipulation, and Matplotlib for visualization.
+
+Scikit-learn is the most widely used machine learning library for Python. It provides simple tools for classification, regression, clustering, and dimensionality reduction. It works seamlessly with NumPy and Pandas.
+
+Jupyter Notebook is an interactive environment for writing and running Python code. It allows you to mix code, text, and visualizations in a single document. It is widely used for data exploration and sharing results.

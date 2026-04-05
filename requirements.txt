@@ -2,3 +2,4 @@ chromadb
 ollama
 python-dotenv
 pypdf
+nltk
