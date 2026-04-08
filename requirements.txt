@@ -3,3 +3,7 @@ ollama
 python-dotenv
 pypdf
 nltk
+transformers
+torch
+accelerate
+sentencepiece
