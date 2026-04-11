@@ -1,0 +1,72 @@
+[
+  {
+    "id": "tc_001",
+    "question": "What is machine learning?",
+    "expected_answer": "Machine learning is a subset of artificial intelligence that enables systems to learn from data without being explicitly programmed.",
+    "category": "ml_basics",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "tc_002",
+    "question": "What is RAG and why is it useful?",
+    "expected_answer": "RAG stands for Retrieval Augmented Generation. It retrieves relevant documents and uses them as context for the LLM, preventing hallucination and grounding answers in real content.",
+    "category": "rag",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "tc_003",
+    "question": "What is the difference between supervised and unsupervised learning?",
+    "expected_answer": "Supervised learning uses labeled data to train models to predict outputs. Unsupervised learning finds hidden patterns in unlabeled data without predefined outputs.",
+    "category": "ml_basics",
+    "difficulty": "beginner"
+  },
+  {
+    "id": "tc_004",
+    "question": "What are embeddings in the context of AI?",
+    "expected_answer": "Embeddings are numerical vector representations of text that capture semantic meaning. Similar texts produce similar vectors, enabling semantic search and comparison.",
+    "category": "embeddings",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "tc_005",
+    "question": "What is a vector database?",
+    "expected_answer": "A vector database stores embedding vectors and supports fast similarity search. It enables retrieval of semantically similar documents at scale, which is essential for RAG systems.",
+    "category": "vector_stores",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "tc_006",
+    "question": "What is fine-tuning in machine learning?",
+    "expected_answer": "Fine-tuning adapts a pretrained model to a specific task by continuing training on a smaller, task-specific dataset. It transfers knowledge from the base model while specializing it.",
+    "category": "fine_tuning",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "tc_007",
+    "question": "What is the transformer architecture?",
+    "expected_answer": "The transformer architecture uses attention mechanisms to process sequences in parallel. It is the foundation of modern LLMs like GPT and BERT, enabling better understanding of context.",
+    "category": "deep_learning",
+    "difficulty": "advanced"
+  },
+  {
+    "id": "tc_008",
+    "question": "What is chunking in a RAG system?",
+    "expected_answer": "Chunking splits documents into smaller overlapping pieces before embedding. It improves retrieval quality because each chunk represents a focused piece of information rather than an entire document.",
+    "category": "rag",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "tc_009",
+    "question": "What is cosine similarity?",
+    "expected_answer": "Cosine similarity measures the angle between two vectors, returning a score from 0 to 1. It is used to compare embedding vectors and determine how semantically similar two pieces of text are.",
+    "category": "embeddings",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "tc_010",
+    "question": "What is prompt engineering?",
+    "expected_answer": "Prompt engineering is the practice of designing instructions to get the best output from an LLM. Techniques include zero-shot, few-shot, and chain-of-thought prompting.",
+    "category": "prompting",
+    "difficulty": "beginner"
+  }
+]
