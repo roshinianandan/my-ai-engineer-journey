@@ -8,3 +8,4 @@ torch
 accelerate
 sentencepiece
 pydantic
+rouge-score
