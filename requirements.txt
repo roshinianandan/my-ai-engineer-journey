@@ -9,3 +9,6 @@ accelerate
 sentencepiece
 pydantic
 rouge-score
+langchain
+langchain-community
+langchain-ollama
