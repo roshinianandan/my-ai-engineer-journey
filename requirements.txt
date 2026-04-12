@@ -12,3 +12,4 @@ rouge-score
 langchain
 langchain-community
 langchain-ollama
+requests
