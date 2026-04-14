@@ -1,0 +1,41 @@
+{
+  "model_config": {
+    "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    "model_type": "causal_lm",
+    "task": "text-generation"
+  },
+  "lora_config": {
+    "r": 16,
+    "lora_alpha": 32,
+    "target_modules": ["q_proj", "v_proj"],
+    "lora_dropout": 0.05,
+    "bias": "none",
+    "task_type": "CAUSAL_LM"
+  },
+  "training_config": {
+    "num_epochs": 3,
+    "batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "learning_rate": 2e-4,
+    "warmup_ratio": 0.03,
+    "lr_scheduler": "cosine",
+    "optimizer": "adamw_torch",
+    "max_seq_length": 512,
+    "fp16": false,
+    "logging_steps": 10,
+    "save_steps": 100,
+    "eval_steps": 100
+  },
+  "data_config": {
+    "train_file": "finetuning/data/train.jsonl",
+    "val_file": "finetuning/data/val.jsonl",
+    "train_split": 0.9,
+    "val_split": 0.1,
+    "min_examples": 50,
+    "max_examples": 10000
+  },
+  "output_config": {
+    "output_dir": "finetuning/output",
+    "model_name": "aiml-assistant-v1"
+  }
+}
