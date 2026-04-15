@@ -14,3 +14,6 @@ langchain-community
 langchain-ollama
 requests
 langchain-core
+fastapi
+uvicorn
+python-multipart
