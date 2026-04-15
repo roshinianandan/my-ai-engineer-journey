@@ -1,11 +1,12 @@
 import asyncio
 import json
 import ollama
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from config import MODEL, TEMPERATURE
+from api.middleware.auth import verify_api_key
 
 app = FastAPI(
     title="Streaming AI Endpoints",
@@ -43,6 +44,15 @@ PERSONAS = {
 
 
 async def generate_stream(message: str, system_prompt: str):
+    """
+    Async generator that yields tokens as Server-Sent Events.
+    Each event is a JSON object with a 'token' field.
+
+    SSE format:
+    data: {"token": "Hello"}\n\n
+    data: {"token": " world"}\n\n
+    data: [DONE]\n\n
+    """
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": message}
@@ -56,10 +66,12 @@ async def generate_stream(message: str, system_prompt: str):
             options={"temperature": TEMPERATURE}
         ):
             token = chunk["message"]["content"]
+            # SSE format — data: <json>\n\n
             event = f"data: {json.dumps({'token': token})}\n\n"
             yield event
-            await asyncio.sleep(0)
+            await asyncio.sleep(0)  # yield control to event loop
 
+        # Signal stream is complete
         yield "data: [DONE]\n\n"
 
     except Exception as e:
@@ -67,8 +79,33 @@ async def generate_stream(message: str, system_prompt: str):
         yield "data: [DONE]\n\n"
 
 
-@app.post("/stream/chat")
-async def stream_chat(request: StreamRequest):
+@app.post(
+    "/stream/chat",
+    summary="Stream a chat response",
+    description="""
+Stream tokens one by one as Server-Sent Events.
+
+How to consume in Python:
+```python
+import requests
+response = requests.post(
+    'http://localhost:8001/stream/chat',
+    json={'message': 'What is ML?'},
+    headers={'X-API-Key': 'dev-key-aiml-journey-2024'},
+    stream=True
+)
+for line in response.iter_lines():
+    if line and line != b'data: [DONE]':
+        data = json.loads(line.decode().replace('data: ', ''))
+        print(data['token'], end='', flush=True)
+```
+    """
+)
+async def stream_chat(
+    request: StreamRequest,
+    api_key: str = Depends(verify_api_key)
+):
+    """Stream chat response as Server-Sent Events."""
     system_prompt = PERSONAS.get(request.persona, PERSONAS["default"])
 
     return StreamingResponse(
@@ -82,11 +119,21 @@ async def stream_chat(request: StreamRequest):
     )
 
 
-@app.post("/stream/rag")
-async def stream_rag(question: str, top_k: int = 3):
+@app.post(
+    "/stream/rag",
+    summary="Stream a RAG answer",
+    description="Retrieve relevant chunks then stream the generated answer token by token."
+)
+async def stream_rag(
+    question: str,
+    top_k: int = 3,
+    api_key: str = Depends(verify_api_key)
+):
+    """Stream RAG answer — retrieval first, then streaming generation."""
     from rag.knowledge_base import search
 
     async def rag_stream():
+        # Step 1: Retrieve chunks
         chunks = search(query=question, top_k=top_k)
 
         if not chunks:
@@ -94,6 +141,7 @@ async def stream_rag(question: str, top_k: int = 3):
             yield "data: [DONE]\n\n"
             return
 
+        # Send sources metadata first
         sources = [{"source": c["source"], "score": c["score"]} for c in chunks]
         yield f"data: {json.dumps({'sources': sources, 'type': 'sources'})}\n\n"
 
@@ -111,6 +159,7 @@ QUESTION: {question}
 
 ANSWER:"""
 
+        # Step 2: Stream the answer
         for chunk in ollama.chat(
             model=MODEL,
             messages=[{"role": "user", "content": prompt}],
