@@ -18,3 +18,5 @@ fastapi
 uvicorn
 python-multipart
 pillow
+rank-bm25
+sentence-transformers
