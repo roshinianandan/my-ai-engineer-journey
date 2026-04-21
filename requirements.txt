@@ -21,3 +21,5 @@ pillow
 rank-bm25
 sentence-transformers
 langgraph
+networkx
+matplotlib
