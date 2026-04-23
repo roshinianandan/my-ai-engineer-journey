@@ -23,3 +23,5 @@ sentence-transformers
 langgraph
 networkx
 matplotlib
+llama-cpp-python
+huggingface_hub
