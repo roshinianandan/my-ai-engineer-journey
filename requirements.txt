@@ -25,3 +25,8 @@ networkx
 matplotlib
 llama-cpp-python
 huggingface_hub
+faster-whisper
+sounddevice
+soundfile
+numpy
+pyttsx3
