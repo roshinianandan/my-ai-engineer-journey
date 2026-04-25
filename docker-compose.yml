@@ -1,0 +1,110 @@
+version: "3.9"
+
+services:
+
+  # ── Ollama — Local LLM Server ─────────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ai_journey_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ── FastAPI Backend ───────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai_journey_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./chroma_db:/app/chroma_db
+      - ./data:/app/data
+      - ./chat_logs:/app/chat_logs
+      - ./agent_logs:/app/agent_logs
+      - ./observability:/app/observability
+    environment:
+      - MODEL=llama3.2
+      - OLLAMA_HOST=http://ollama:11434
+      - API_KEY=${API_KEY:-dev-key-aiml-journey-2024}
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: unless-stopped
+    command: >
+      uvicorn api.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ── Streamlit Frontend ────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai_journey_frontend
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./chroma_db:/app/chroma_db
+      - ./data:/app/data
+    environment:
+      - API_URL=http://api:8000
+      - API_KEY=${API_KEY:-dev-key-aiml-journey-2024}
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    command: >
+      streamlit run frontend/app.py
+      --server.port 8501
+      --server.address 0.0.0.0
+      --server.headless true
+
+  # ── Streaming Endpoint ────────────────────────────────────────────────────
+  streaming:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai_journey_streaming
+    ports:
+      - "8001:8001"
+    environment:
+      - MODEL=llama3.2
+      - OLLAMA_HOST=http://ollama:11434
+      - API_KEY=${API_KEY:-dev-key-aiml-journey-2024}
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: unless-stopped
+    command: >
+      uvicorn streaming.stream_endpoint:app
+      --host 0.0.0.0
+      --port 8001
+
+volumes:
+  ollama_data:
+    name: ai_journey_ollama_data
+
+networks:
+  default:
+    name: ai_journey_network
