@@ -1,0 +1,47 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files with secrets
+.env
+
+# Git
+.git/
+.gitignore
+
+# Models (too large for container)
+models/
+*.gguf
+
+# Logs and temp files
+chat_logs/
+agent_logs/
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Test and dev files
+tests/
+*.test.py
+
+# Large data that should be mounted as volumes
+# chroma_db/ — mounted as volume in compose
